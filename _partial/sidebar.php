@@ -5,7 +5,7 @@
 		<div class="sidebar-brand-icon rotate-n-15">
 			<i class="fas fa-laugh-wink"></i>
 		</div>
-		<div class="sidebar-brand-text mx-3">Warung Barokah<sup></sup></div>
+		<div class="sidebar-brand-text mx-3">Project Topsis<sup></sup></div>
 	</a>
 
 	<!-- Divider -->
@@ -17,28 +17,22 @@
 	</div>
 
 	<!-- Nav Item - Charts -->
+	<li class="nav-item <?php if($_GET['halaman'] == "kriteria") {echo"active";} ?>">
+		<a class="nav-link" href="?halaman=kriteria">
+			<i class="fas fa-edit"></i>
+			<span>Kriteria</span></a>
+	</li>
+
 	<li class="nav-item <?php if($_GET['halaman'] == "barang") {echo"active";} ?>">
 		<a class="nav-link" href="?halaman=barang">
 			<i class="fas fa-edit"></i>
-			<span>Daftar Menu</span></a>
+			<span>Barang</span></a>
 	</li>
 
-	<li class="nav-item <?php if($_GET['halaman'] == "kategori_barang") {echo"active";} ?>">
-		<a class="nav-link" href="?halaman=kategori_barang">
-			<i class="fas fa-edit"></i>
-			<span>Daftar Kategori Menu</span></a>
-	</li>
-
-	<li class="nav-item <?php if($_GET['halaman'] == "user") {echo"active";} ?>">
-		<a class="nav-link" href="?halaman=user">
+	<li class="nav-item <?php if($_GET['halaman'] == "topsis") {echo"active";} ?>">
+		<a class="nav-link" href="?halaman=topsis">
 			<i class="fas fa-user"></i>
-			<span>User</span></a>
-	</li>
-
-	<li class="nav-item <?php if($_GET['halaman'] == "laporan") {echo"active";} ?>">
-		<a class="nav-link" href="?halaman=laporan">
-			<i class="fas fa-print"></i>
-			<span>Laporan</span></a>
+			<span>Topsis</span></a>
 	</li>
 
 	

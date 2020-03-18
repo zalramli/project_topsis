@@ -4,7 +4,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title>Warung Barokah</title>
+<title>Project Topsis</title>
 
 <!-- Custom fonts for this template-->
 <link href="assets/template/sb_admin_2/vendor/fontawesome-free/css/all.min.css" rel="stylesheet"
