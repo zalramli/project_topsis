@@ -9,7 +9,7 @@ $e = sqrt(pow((1.85695-1.85695),2) + pow((2.98144-1.19256),2) + pow((1.29776-3.2
 $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.24444),2) + pow((1.8741-1.40556),2) + pow((2.3534-3.13784),2));
 
 ?>  
-<div class="container-fluid">
+<div class="container-fluid mt-3">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Evaluation Matrix (x<sub>ij</sub>)</h6>
@@ -17,20 +17,20 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
         <div class="card-body">
             <div class="table-responsive">
                 <?php 
-                $query = mysqli_query($koneksi, "SELECT * FROM detail_transaksi_kriteria JOIN kriteria USING (id_kriteria) JOIN barang USING(id_barang)");
-                $data      =array();
-                $kriterias =array();
-                $bobot     =array();
-                $atribut     =array();
-                $nilai_kuadrat =array();
+                $query = mysqli_query($koneksi, "SELECT * FROM detail_transaksi JOIN kriteria USING (id_kriteria) JOIN barang USING(id_barang)");
+                $data      =[];
+                $kriterias =[];
+                $bobot     =[];
+                $atribut     =[];
+                $nilai_kuadrat =[];
 
                 if ($query) {
                     while($row=$query->fetch_object()){
                         if(!isset($data[$row->nama_barang])){
-                            $data[$row->nama_barang]=array();
+                            $data[$row->nama_barang]=[];
                         }
                         if(!isset($data[$row->nama_barang][$row->nama_kriteria])){
-                            $data[$row->nama_barang][$row->nama_kriteria]=array();
+                            $data[$row->nama_barang][$row->nama_kriteria]=[];
                         }
                         if(!isset($nilai_kuadrat[$row->nama_kriteria])){
                             $nilai_kuadrat[$row->nama_kriteria]=0;
@@ -168,7 +168,7 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                     <tbody>
                     <?php
                         $i=0;
-                        $y=array();
+                        $y=[];
                         foreach($data as $nama=>$krit){
                             echo "<tr>
                             <td>".(++$i)."</td>
@@ -217,7 +217,7 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 <tbody>
                 <tr>
                     <?php
-                    $yplus=array();
+                    $yplus=[];
                     foreach($kriteria as $k){
                         if($atribut[$k] == "Benefit")
                         {
@@ -267,7 +267,7 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 <tbody>
                 <tr>
                     <?php
-                    $ymin=array();
+                    $ymin=[];
                     foreach($kriteria as $k){
                         if($atribut[$k] == "Cost")
                         {
@@ -308,7 +308,7 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 <tbody>
                 <?php
                     $i=0;
-                    $dplus=array();
+                    $dplus=[];
                     foreach($data as $nama=>$krit){
                         echo "<tr>
                         <td>".(++$i)."</td>
@@ -349,7 +349,7 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 <tbody>
                   <?php
                   $i=0;
-                  $dmin=array();
+                  $dmin=[];
                   foreach($data as $nama=>$krit){
                     echo "<tr>
                       <td>".(++$i)."</td>
@@ -389,7 +389,7 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 <tbody>
                   <?php
                   $i=0;
-                  $V=array();
+                  $V=[];
                   foreach($data as $nama=>$krit){
                     echo "<tr>
                       <td>".(++$i)."</td>

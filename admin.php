@@ -57,9 +57,7 @@ include "koneksi/function.php";
                         include "system/master/kriteria/tampil.php";
                     }
 
-                    if ($_GET['halaman'] == 'topsis') {
-                        include "system/transaksi/perhitungan_topsis/tampil.php";
-                    }
+                    
 
                 ?>
                 <!-- /.container-fluid -->
