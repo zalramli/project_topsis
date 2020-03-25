@@ -30,18 +30,37 @@ if(isset($_POST['simpan']))
                     $value_kriteria = [];
                     $tampil_kriteria = mysqli_query($koneksi,"SELECT * FROM kriteria");
                     $count_kriteria = mysqli_num_rows($tampil_kriteria);
+
+                    $sql2 = mysqli_query($koneksi, "SELECT MAX((SUBSTRING(nama_barang_detail,-10))) FROM detail_transaksi");
+                            $kode_faktur2 = mysqli_fetch_array($sql2);
+                            if ($kode_faktur2) {
+                                $nilai2 = substr($kode_faktur2[0], -10);
+                                $kode2 = (int) $nilai2;
+                                //tambahkan sebanyak + 1
+                                $kode2 = $kode2 + 1;
+                                $auto_kode2 = str_pad($kode2, 10, "0",  STR_PAD_LEFT);
+                            } else {
+                                $auto_kode2 = "0000000001";
+                            }
+                    
+
                     for($j=0;$j<$count_kriteria;$j++){
                     $data_kriteria = mysqli_fetch_array($tampil_kriteria);
                         $id_kriteria = $data_kriteria['id_kriteria'];
+                        
                         for ($i = 0; $i < count($_POST['id_barang']); $i++) {
+                            
+
                             $id_barang = $_POST['id_barang'][$i];
+                            $nama_barang = $_POST['nama_barang_detail'][$i];
+                            $nama_barang_detail = $nama_barang." ".$auto_kode2;
                             $tingkat_kesulitan = $_POST['tingkat_kesulitan'][$i];
                             $qty_temp =  $_POST['qty'][$i];
                             $qty = (int) $qty_temp;
                             $harga_temp = $_POST['harga'][$i];
                             $harga = (int) preg_replace("/[^0-9]/", "", $harga_temp);
                             $value_kriteria = [$tgl_pemesanan,$tgl_deadline,$harga,$qty,$tingkat_kesulitan];
-                            $insert_detail = mysqli_query($koneksi,"INSERT INTO detail_transaksi (id_detail_transaksi,id_transaksi,id_barang,id_kriteria,value_kriteria,'status_pengerjaan') VALUES(NULL,'$auto_kode','$id_barang','$id_kriteria','$value_kriteria[$j]','Belum Selesai')");   
+                            $insert_detail = mysqli_query($koneksi,"INSERT INTO detail_transaksi (id_detail_transaksi,id_transaksi,id_barang,id_kriteria,nama_barang_detail,value_kriteria,status_pengerjaan) VALUES (NULL,'$auto_kode','$id_barang','$id_kriteria','$nama_barang_detail','$value_kriteria[$j]','Belum Selesai')");   
                         }
                         }
                         if($insert_detail)
@@ -198,6 +217,8 @@ function tambah(kode, nama, harga,tingkat_kesulitan) {
         count + `" value="` + kode + `">
         <input type="hidden" name="tingkat_kesulitan[]" class="form-control form-control-sm" id="kode_barang` +
         count + `" value="` + tingkat_kesulitan + `">
+        <input type="hidden" name="nama_barang_detail[]" class="form-control form-control-sm" id="kode_barang` +
+        count + `" value="` + nama + `">
                     </td>
                     <td>
                         <input type="text" name="qty[]" class="form-control form-control-sm qty" id="qty` + count +
@@ -289,3 +310,5 @@ $(document).on('keyup', '.qty', function() {
 });
 
 </script>
+
+

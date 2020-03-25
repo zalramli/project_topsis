@@ -8,7 +8,7 @@ $d = sqrt(pow((3.7139-1.85695),2) + pow((1.19256-1.19256),2) + pow((3.24444-3.24
 $e = sqrt(pow((1.85695-1.85695),2) + pow((2.98144-1.19256),2) + pow((1.29776-3.24444),2) + pow((1.8741-1.40556),2) + pow((3.13784-3.13784),2));
 $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.24444),2) + pow((1.8741-1.40556),2) + pow((2.3534-3.13784),2));
 
-?>  
+?> 
 <div class="container-fluid mt-3">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -16,32 +16,55 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <?php 
+            <?php 
                 $query = mysqli_query($koneksi, "SELECT * FROM detail_transaksi JOIN kriteria USING (id_kriteria) JOIN barang USING(id_barang)");
-                $data      =[];
-                $kriterias =[];
-                $bobot     =[];
-                $atribut     =[];
-                $nilai_kuadrat =[];
-
+                $jumlah_batas = mysqli_num_rows($query);
+                $data      = [];
+                $kriterias = [];
+                $bobot     = [];
+                $atribut     = [];
+                $nilai_kuadrat = [];
+                $tanggal_pemesanan = "";
+                $tanggal_deadline = "";
+                $asd = "";
                 if ($query) {
-                    while($row=$query->fetch_object()){
-                        if(!isset($data[$row->nama_barang])){
-                            $data[$row->nama_barang]=[];
-                        }
-                        if(!isset($data[$row->nama_barang][$row->nama_kriteria])){
-                            $data[$row->nama_barang][$row->nama_kriteria]=[];
-                        }
-                        if(!isset($nilai_kuadrat[$row->nama_kriteria])){
-                            $nilai_kuadrat[$row->nama_kriteria]=0;
+                    foreach($query as $row)
+                    {
+
+                        if(!isset($nilai_kuadrat[$row['nama_kriteria']])){
+                            $nilai_kuadrat[$row['nama_kriteria']]=0;
                         }
 
-                        $bobot[$row->nama_kriteria]=$row->bobot;
-                        $atribut[$row->nama_kriteria]=$row->atribut;
-                        $data[$row->nama_barang][$row->nama_kriteria]=$row->value_kriteria;
-                        $nilai_kuadrat[$row->nama_kriteria]+=pow($row->value_kriteria,2);
-                        $kriterias[]=$row->nama_kriteria;
+                        $bobot[$row['nama_kriteria']]=$row['bobot'];
+                        $atribut[$row['nama_kriteria']]=$row['atribut'];  
+
+                        if($row['nama_kriteria'] == "Sisa Hari")
+                        {
+                            date_default_timezone_set("Asia/Jakarta");
+                            $tanggal_deadline2 = date("Y-m-d",strtotime($row['value_kriteria']));
+                            $today2    = new DateTime($tanggal_deadline2);
+                            $booking2       = new DateTime();
+                            $diff2        = $booking2->diff($today2);
+                            $interval2 = $diff2->format('%d');
+                            $row['value_kriteria'] = $interval2 + 1;
+                        }
+
+                        if($row['nama_kriteria'] == "Waktu Pengerjaan")
+                        {
+                            $tanggal_pemesanan = date("Y-m-d",strtotime($row['value_kriteria']));
+                            $today    = new DateTime($tanggal_pemesanan);
+                            $booking       = new DateTime($tanggal_deadline2);
+                            $diff        = $booking->diff($today);
+                            $interval = $diff->format('%d');
+                            $row['value_kriteria'] = $interval;
+                        }
+                        
+                        
+                        $data[$row['nama_barang_detail']][$row['nama_kriteria']] = $row['value_kriteria'];
+                        $nilai_kuadrat[$row['nama_kriteria']]+=pow($row['value_kriteria'],2);
+                        $kriterias[]=$row['nama_kriteria'];
                     }
+                    
                 }
                 $kriteria     =array_unique($kriterias);
                 $jml_kriteria =count($kriteria);
@@ -69,18 +92,18 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                     </thead>
                     <tbody>
                     <?php
-                $i=0;
-                foreach($data as $nama=>$krit){
-                    echo "<tr>
-                    <td>".(++$i)."</td>
-                    <th>A$i</th>
-                    <td>$nama</td>";
-                    foreach($kriteria as $k){
-                    echo "<td align='center'>$krit[$k]</td>";
+                    $i=0;
+                    foreach($data as $nama =>$krit){
+                        echo "<tr>
+                        <td>".(++$i)."</td>
+                        <th>A$i</th>
+                        <td>$nama</td>";
+                        foreach($kriteria as $k){
+                        echo "<td align='center'>$krit[$k]</td>";
+                        }
+                        echo "</tr>\n";
                     }
-                    echo "</tr>\n";
-                }
-                ?>
+                    ?>
                     </tbody>
                 </table>
             </div>
@@ -124,7 +147,7 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                             <th>A{$i}</th>
                             <td>{$nama}</td>";
                             foreach($kriteria as $k){
-                            echo "<td align='center'>".number_format(($krit[$k]/sqrt($nilai_kuadrat[$k])),5)."</td>";
+                            echo "<td align='center'>".round(($krit[$k]/sqrt($nilai_kuadrat[$k])),3)."</td>";
                             }
                             echo
                             "</tr>\n";
@@ -175,7 +198,7 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                             <th>A{$i}</th>
                             <td>{$nama}</td>";
                             foreach($kriteria as $k){
-                            $y[$k][$i-1]=number_format(($krit[$k]/sqrt($nilai_kuadrat[$k])),5)*$bobot[$k];
+                            $y[$k][$i-1]=round(($krit[$k]/sqrt($nilai_kuadrat[$k])),3)*$bobot[$k];
                             echo "<td align='center'>".$y[$k][$i-1]."</td>";
                             }
                             echo
@@ -277,7 +300,7 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                         {
                             $ymin[$k]=[$k]?min($y[$k]):max($y[$k]);
                         }
-                      echo "<th>{$ymin[$k]}</th>";
+                    echo "<th>{$ymin[$k]}</th>";
                     }
 
                     ?>
@@ -319,7 +342,7 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                             $dplus[$i-1]=0;
                             $dplus[$i-1]+=pow($yplus[$k]-$y[$k][$i-1],2);
                         }
-                        echo "<td>".number_format(sqrt($dplus[$i-1]),13)."</td>
+                        echo "<td>".round(sqrt($dplus[$i-1]),3)."</td>
                         </tr>\n";
                     }
                 ?>
@@ -339,30 +362,30 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
-                  <tr>
+                <tr>
                     <th>No</th>
                     <th>Alternatif</th>
                     <th>Nama</th>
                     <th>D<suo>-</sup></th>
-                  </tr>
+                </tr>
                 </thead>
                 <tbody>
-                  <?php
-                  $i=0;
-                  $dmin=[];
-                  foreach($data as $nama=>$krit){
+                <?php
+                $i=0;
+                $dmin=[];
+                foreach($data as $nama=>$krit){
                     echo "<tr>
-                      <td>".(++$i)."</td>
-                      <th>A{$i}</th>
-                      <td>{$nama}</td>";
+                    <td>".(++$i)."</td>
+                    <th>A{$i}</th>
+                    <td>{$nama}</td>";
                     foreach($kriteria as $k){
-                      if(!isset($dmin[$i-1]))$dmin[$i-1]=0;
-                      $dmin[$i-1]+=pow($ymin[$k]-$y[$k][$i-1],2);
+                    if(!isset($dmin[$i-1]))$dmin[$i-1]=0;
+                    $dmin[$i-1]+=pow($ymin[$k]-$y[$k][$i-1],2);
                     }
-                    echo "<td>".number_format(sqrt($dmin[$i-1]),13)."</td>
-                     </tr>\n";
-                  }
-                  ?>
+                    echo "<td>".round(sqrt($dmin[$i-1]),3)."</td>
+                    </tr>\n";
+                }
+                ?>
                 </tbody>
                 </table>
             </div>
@@ -379,28 +402,29 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
-                  <tr>
+                <tr>
                     <th>No</th>
                     <th>Alternatif</th>
                     <th>Nama</th>
                     <th>V<sub>i</sub></th>
-                  </tr>
+                </tr>
                 </thead>
                 <tbody>
-                  <?php
-                  $i=0;
-                  $V=[];
-                  foreach($data as $nama=>$krit){
+                <?php
+                $i=0;
+                $V=[];
+                foreach($data as $nama=>$krit){
                     echo "<tr>
-                      <td>".(++$i)."</td>
-                      <th>A{$i}</th>
-                      <td>{$nama}</td>";
+                    <td>".(++$i)."</td>
+                    <th>A{$i}</th>
+                    <td>{$nama}</td>";
                     foreach($kriteria as $k){
-                      $V[$i-1]=sqrt($dmin[$i-1])/(sqrt($dmin[$i-1])+sqrt($dplus[$i-1]));
+                    $V[$i-1]=sqrt($dmin[$i-1])/(sqrt($dmin[$i-1])+sqrt($dplus[$i-1]));
                     }
-                    echo "<td>{$V[$i-1]}</td></tr>\n";
-                  }
-                  ?>
+                    $preferensi = round($V[$i-1],3);
+                    echo "<td>{$preferensi}</td></tr>\n";
+                }
+                ?>
                 </tbody>
                 </table>
             </div>
