@@ -20,7 +20,7 @@ if(isset($_POST['simpan']))
                 $grand_total = (int) preg_replace("/[^0-9]/", "", $grand_total_temp);
                 date_default_timezone_set("Asia/Jakarta");
                 $tgl_pemesanan = Date('Y-m-d');
-                $nama_customer = $_POST['nama_customer'];
+                $nama_customer = addslashes($_POST['nama_customer']);
                 $no_hp = $_POST['no_hp'];
                 $tgl_deadline = $_POST['tgl_deadline'];
 
@@ -52,7 +52,7 @@ if(isset($_POST['simpan']))
                             
 
                             $id_barang = $_POST['id_barang'][$i];
-                            $nama_barang = $_POST['nama_barang_detail'][$i];
+                            $nama_barang = addslashes($_POST['nama_barang_detail'])[$i];
                             $nama_barang_detail = $nama_barang." ".$auto_kode2;
                             $tingkat_kesulitan = $_POST['tingkat_kesulitan'][$i];
                             $qty_temp =  $_POST['qty'][$i];
@@ -118,7 +118,7 @@ if(isset($_POST['simpan']))
                                                     <?php echo rupiah($harga) ?></p>
                                                 <div class="text-center">
                                                     <a onclick="tambah('<?php echo $id_barang ?>','<?php echo $nama_barang ?>','<?php echo $harga  ?>','<?php echo $tingkat_kesulitan  ?>')"
-                                                        class="btn btn-sm btn-primary text-white mt-2">Pilih Barang</a>
+                                                        class="btn btn-sm btn-danger text-white mt-2">Pilih Barang</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -188,7 +188,7 @@ if(isset($_POST['simpan']))
                                     <tbody>
                                         <tr>
                                             <td><button type="submit" name="simpan"
-                                                    class="btn btn-sm btn-primary">Simpan Data</button></td>
+                                                    class="btn btn-sm btn-success">Simpan Data</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
