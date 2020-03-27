@@ -24,41 +24,34 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 $bobot     = [];
                 $atribut     = [];
                 $nilai_kuadrat = [];
-                $tanggal_pemesanan = "";
                 $tanggal_deadline = "";
-                $asd = "";
                 if ($query) {
                     foreach($query as $row)
                     {
+                        // if(!isset($data[$row['nama_barang_detail']])){
+                        //     $data[$row['nama_barang_detail']]=[];
+                        // }
+                        // if(!isset($data[$row['nama_barang_detail']][$row['nama_kriteria']])){
+                        //     $data[$row['nama_barang_detail']][$row['nama_kriteria']]=[];
+                        // }
 
                         if(!isset($nilai_kuadrat[$row['nama_kriteria']])){
                             $nilai_kuadrat[$row['nama_kriteria']]=0;
                         }
 
                         $bobot[$row['nama_kriteria']]=$row['bobot'];
-                        $atribut[$row['nama_kriteria']]=$row['atribut'];  
-
+                        $atribut[$row['nama_kriteria']]=$row['atribut'];
                         if($row['nama_kriteria'] == "Sisa Hari")
                         {
                             date_default_timezone_set("Asia/Jakarta");
-                            $tanggal_deadline2 = date("Y-m-d",strtotime($row['value_kriteria']));
-                            $today2    = new DateTime($tanggal_deadline2);
-                            $booking2       = new DateTime();
+                            $tanggal_deadline = date("Y-m-d",strtotime($row['value_kriteria']));
+                            $sekarang = date("Y-m-d");
+                            $today2    = new DateTime($sekarang);
+                            $booking2       = new DateTime($tanggal_deadline);
                             $diff2        = $booking2->diff($today2);
                             $interval2 = $diff2->format('%d');
-                            $row['value_kriteria'] = $interval2 + 1;
+                            $row['value_kriteria'] = $interval2;
                         }
-
-                        if($row['nama_kriteria'] == "Waktu Pengerjaan")
-                        {
-                            $tanggal_pemesanan = date("Y-m-d",strtotime($row['value_kriteria']));
-                            $today    = new DateTime($tanggal_pemesanan);
-                            $booking       = new DateTime($tanggal_deadline2);
-                            $diff        = $booking->diff($today);
-                            $interval = $diff->format('%d');
-                            $row['value_kriteria'] = $interval;
-                        }
-                        
                         
                         $data[$row['nama_barang_detail']][$row['nama_kriteria']] = $row['value_kriteria'];
                         $nilai_kuadrat[$row['nama_kriteria']]+=pow($row['value_kriteria'],2);
@@ -392,7 +385,6 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
         </div>
     </div>
 </div>
-
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -400,6 +392,10 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
         </div>
         <div class="card-body">
             <div class="table-responsive">
+                <?php 
+                if($dmin[0] != 0 || $dplus[0] != 0 )
+                {
+                ?>
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                 <tr>
@@ -427,6 +423,13 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 ?>
                 </tbody>
                 </table>
+                <?php 
+                } else {
+                ?>
+                <h2 class="text-center">Harus Ada 2 Data</h2>
+                <?php
+                }
+                ?>
             </div>
         </div>
     </div>

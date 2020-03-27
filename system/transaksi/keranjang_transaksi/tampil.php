@@ -19,10 +19,15 @@ if(isset($_POST['simpan']))
                 $grand_total_temp = $_POST['grand_total'];
                 $grand_total = (int) preg_replace("/[^0-9]/", "", $grand_total_temp);
                 date_default_timezone_set("Asia/Jakarta");
-                $tgl_pemesanan = Date('Y-m-d');
                 $nama_customer = addslashes($_POST['nama_customer']);
                 $no_hp = $_POST['no_hp'];
-                $tgl_deadline = $_POST['tgl_deadline'];
+                $tgl_pemesanan = date('Y-m-d');
+                $tgl_deadline = date("Y-m-d",strtotime($_POST['tgl_deadline']));
+                $sekarang    = new DateTime($tgl_pemesanan);
+                $deadline       = new DateTime($tgl_deadline);
+                $jarak        = $deadline->diff($sekarang);
+                $selisih = $jarak->format('%d');
+                $waktu_pengerjaan = $selisih;
 
                 $insert = mysqli_query($koneksi,"INSERT INTO transaksi VALUES('$auto_kode','$tgl_pemesanan','$tgl_deadline','$nama_customer','$no_hp','$grand_total')");
                 if($insert)
@@ -52,14 +57,15 @@ if(isset($_POST['simpan']))
                             
 
                             $id_barang = $_POST['id_barang'][$i];
-                            $nama_barang = addslashes($_POST['nama_barang_detail'])[$i];
-                            $nama_barang_detail = $nama_barang." ".$auto_kode2;
+                            $nama_barang = $_POST['nama_barang_detail'][$i];
+                            $nama_barang_detail_temp = $nama_barang." ".$auto_kode2;
+                            $nama_barang_detail = addslashes($nama_barang_detail_temp);
                             $tingkat_kesulitan = $_POST['tingkat_kesulitan'][$i];
                             $qty_temp =  $_POST['qty'][$i];
                             $qty = (int) $qty_temp;
                             $harga_temp = $_POST['harga'][$i];
                             $harga = (int) preg_replace("/[^0-9]/", "", $harga_temp);
-                            $value_kriteria = [$tgl_pemesanan,$tgl_deadline,$harga,$qty,$tingkat_kesulitan];
+                            $value_kriteria = [$tgl_deadline,$waktu_pengerjaan,$harga,$qty,$tingkat_kesulitan];
                             $insert_detail = mysqli_query($koneksi,"INSERT INTO detail_transaksi (id_detail_transaksi,id_transaksi,id_barang,id_kriteria,nama_barang_detail,value_kriteria,status_pengerjaan) VALUES (NULL,'$auto_kode','$id_barang','$id_kriteria','$nama_barang_detail','$value_kriteria[$j]','Belum Selesai')");   
                         }
                         }
@@ -117,7 +123,7 @@ if(isset($_POST['simpan']))
                                                 <p style="margin:0" class="text-center">
                                                     <?php echo rupiah($harga) ?></p>
                                                 <div class="text-center">
-                                                    <a onclick="tambah('<?php echo $id_barang ?>','<?php echo $nama_barang ?>','<?php echo $harga  ?>','<?php echo $tingkat_kesulitan  ?>')"
+                                                    <a onclick="tambah('<?php echo $id_barang ?>','<?php echo addslashes($nama_barang) ?>','<?php echo $harga  ?>','<?php echo $tingkat_kesulitan  ?>')"
                                                         class="btn btn-sm btn-danger text-white mt-2">Pilih Barang</a>
                                                 </div>
                                             </div>
@@ -287,7 +293,6 @@ function update_sub() {
         success: function(data) {
             $('#grand_total').val(data);
             $('.rupiah').trigger('input'); // Will be display 
-            kembalian();
         }
     });
 
