@@ -33,7 +33,7 @@ include "koneksi/function.php";
                 <a class="nav-link <?php if($_GET['halaman'] == "transaksi") {echo"active";} ?>" href="?halaman=transaksi">Transaksi</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Prioritas Order</a>
+                <a class="nav-link <?php if($_GET['halaman'] == "prioritas_order") {echo"active";} ?>" href="?halaman=prioritas_order">Prioritas Order</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?php if($_GET['halaman'] == "topsis") {echo"active";} ?>" href="?halaman=topsis">Perhitungan Topsis</a>
@@ -56,6 +56,9 @@ include "koneksi/function.php";
                     }
                     if ($_GET['halaman'] == 'topsis') {
                         include "system/transaksi/perhitungan_topsis/tampil.php";
+                    }
+                    if ($_GET['halaman'] == 'prioritas_order') {
+                        include "system/transaksi/prioritas_order/tampil.php";
                     }
                 ?>
 
