@@ -17,7 +17,7 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
         <div class="card-body">
             <div class="table-responsive">
             <?php 
-                $query = mysqli_query($koneksi, "SELECT * FROM detail_transaksi JOIN kriteria USING (id_kriteria) JOIN barang USING(id_barang)");
+                $query = mysqli_query($koneksi, "SELECT * FROM detail_transaksi JOIN transaksi USING(id_transaksi) JOIN kriteria USING (id_kriteria) JOIN barang USING(id_barang)");
                 $jumlah_batas = mysqli_num_rows($query);
                 $data      = [];
                 $kriterias = [];
@@ -28,19 +28,18 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 if ($query) {
                     foreach($query as $row)
                     {
-                        // if(!isset($data[$row['nama_barang_detail']])){
-                        //     $data[$row['nama_barang_detail']]=[];
-                        // }
-                        // if(!isset($data[$row['nama_barang_detail']][$row['nama_kriteria']])){
-                        //     $data[$row['nama_barang_detail']][$row['nama_kriteria']]=[];
-                        // }
+                        if(!isset($data[$row['nama_barang_detail']])){
+                            $data[$row['nama_barang_detail']]=[];
+                        }
+                        if(!isset($data[$row['nama_barang_detail']][$row['nama_kriteria']])){
+                            $data[$row['nama_barang_detail']][$row['nama_kriteria']]=[];
+                        }
 
                         if(!isset($nilai_kuadrat[$row['nama_kriteria']])){
                             $nilai_kuadrat[$row['nama_kriteria']]=0;
                         }
 
-                        $bobot[$row['nama_kriteria']]=$row['bobot'];
-                        $atribut[$row['nama_kriteria']]=$row['atribut'];
+                        
                         if($row['nama_kriteria'] == "Sisa Hari")
                         {
                             date_default_timezone_set("Asia/Jakarta");
@@ -52,7 +51,8 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                             $interval2 = $diff2->format('%d');
                             $row['value_kriteria'] = $interval2;
                         }
-                        
+                        $bobot[$row['nama_kriteria']]=$row['bobot'];
+                        $atribut[$row['nama_kriteria']]=$row['atribut'];
                         $data[$row['nama_barang_detail']][$row['nama_kriteria']] = $row['value_kriteria'];
                         $nilai_kuadrat[$row['nama_kriteria']]+=pow($row['value_kriteria'],2);
                         $kriterias[]=$row['nama_kriteria'];
@@ -65,38 +65,59 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                     <tr>
-                        <th class="text-center" width="5%" rowspan="3">No</th>
-                        <th class="text-center" rowspan="3">Alternatif</th>
-                        <th class="text-center" rowspan="3">Nama</th>
-                        <th colspan="<?php echo $jml_kriteria;?>"">Kriteria</th>
+                        <th class="text-center" width="5%" rowspan="2">No</th>
+                        <th class="text-center" rowspan="2">Barang</th>
+                        <th class="text-center" rowspan="2">Customer</th>
+                        <th class="text-center" colspan="<?php echo $jml_kriteria;?>">KRITERIA</th>
                     </tr>
                     <tr>
                         <?php
                         foreach($kriteria as $k)
-                        echo "<th>$k</th>\n";
+                        {;
                         ?>
-                    </tr>
-                    <tr>
+                            <th class="text-center"><?php echo $k ?></th>
                         <?php
-                        for($n=1;$n<=$jml_kriteria;$n++)
-                        echo "<th>K$n</th>";
+                        }
                         ?>
                     </tr>
                     </thead>
                     <tbody>
-                    <?php
-                    $i=0;
-                    foreach($data as $nama =>$krit){
-                        echo "<tr>
-                        <td>".(++$i)."</td>
-                        <th>A$i</th>
-                        <td>$nama</td>";
-                        foreach($kriteria as $k){
-                        echo "<td align='center'>$krit[$k]</td>";
+                        <?php
+                        $i=0;
+                        $nama_customer = NULL;
+                        $no_hp = NULL;
+                        $nama_barang = NULL;
+                        foreach($data as $nama => $krit)
+                        {
+                            $explode = explode(",",$nama);
+                            $nama_customer = $explode[0];
+                            $no_hp = $explode[1];
+                            $nama_barang = $explode[2];
+                        ?>
+                            <tr>
+                                <td class="text-center"><?php echo ++$i."." ?></td>
+                                <td><?php echo substr($nama_barang,0,-10) ?></td>
+                                <td><?php echo stripcslashes($nama_customer) ?></td>
+                            <?php
+                            foreach($kriteria as $k)
+                            {
+                            ?>
+                                <?php 
+                                if($k == 'Harga')
+                                {
+                                    echo "<td class='text-right'>".rupiah($krit[$k])."</td>";
+                                }
+                                else
+                                {
+                                    echo "<td class='text-center'>$krit[$k]</td>";
+                                }
+                                ?>
+                                
+                            <?php
+                            }
+                            echo "</tr>";
                         }
-                        echo "</tr>\n";
-                    }
-                    ?>
+                        ?>
                     </tbody>
                 </table>
             </div>
@@ -110,42 +131,53 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
                     <thead>
                     <tr>
-                        <th class="text-center" width="5%" rowspan="3">No</th>
-                        <th class="text-center" rowspan="3">Alternatif</th>
-                        <th class="text-center" rowspan="3">Nama</th>
-                        <th colspan="<?php echo $jml_kriteria;?>"">Kriteria</th>
+                        <th class="text-center" width="5%" rowspan="2">No</th>
+                        <th class="text-center" rowspan="2">Barang</th>
+                        <th class="text-center" rowspan="2">Customer</th>
+                        <th class="text-center" colspan="<?php echo $jml_kriteria;?>">KRITERIA</th>
                     </tr>
                     <tr>
                         <?php
                         foreach($kriteria as $k)
-                        echo "<th>$k</th>\n";
-                        ?>
-                    </tr>
-                    <tr>
+                        {
+                            ?>
+                            <th class="text-center"><?php echo $k ?></th>
                         <?php
-                        for($n=1;$n<=$jml_kriteria;$n++)
-                        echo "<th>K$n</th>";
+                        }
                         ?>
                     </tr>
                     </thead>
                     <tbody>
                     <?php
                         $i=0;
-                        foreach($data as $nama=>$krit){
-                            echo "<tr>
-                            <td>".(++$i)."</td>
-                            <th>A{$i}</th>
-                            <td>{$nama}</td>";
+                        $nama_customer = NULL;
+                        $no_hp = NULL;
+                        $nama_barang = NULL;
+                        foreach($data as $nama => $krit)
+                        {
+                            $explode = explode(",",$nama);
+                            $nama_customer = $explode[0];
+                            $no_hp = $explode[1];
+                            $nama_barang = $explode[2];
+                        ?>
+                            <tr>
+                                <td class="text-center"><?php echo ++$i."." ?></td>
+                                <td><?php echo substr($nama_barang,0,-10) ?></td>
+                                <td><?php echo stripcslashes($nama_customer) ?></td>
+                            <?php
                             foreach($kriteria as $k){
-                            echo "<td align='center'>".round(($krit[$k]/sqrt($nilai_kuadrat[$k])),3)."</td>";
+                            ?>
+                                <td class="text-center"><?php echo round(($krit[$k]/sqrt($nilai_kuadrat[$k])),3) ?></td>
+                            <?php
                             }
-                            echo
-                            "</tr>\n";
+                            ?>
+                            </tr>
+                        <?php
                         }
-                    ?>
+                        ?>
                     </tbody>
                 </table>
             </div>
@@ -160,24 +192,22 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
                     <thead>
                     <tr>
-                        <th class="text-center" width="5%" rowspan="3">No</th>
-                        <th class="text-center" rowspan="3">Alternatif</th>
-                        <th class="text-center" rowspan="3">Nama</th>
-                        <th colspan="<?php echo $jml_kriteria;?>"">Kriteria</th>
+                        <th class="text-center" width="5%" rowspan="2">No</th>
+                        <th class="text-center" rowspan="2">Barang</th>
+                        <th class="text-center" rowspan="2">Customer</th>
+                        <th class="text-center" colspan="<?php echo $jml_kriteria;?>">KRITERIA</th>
                     </tr>
                     <tr>
                         <?php
                         foreach($kriteria as $k)
-                        echo "<th>$k</th>\n";
+                        {
                         ?>
-                    </tr>
-                    <tr>
+                            <th class="text-center"><?php echo $k ?></th>
                         <?php
-                        for($n=1;$n<=$jml_kriteria;$n++)
-                        echo "<th>K$n</th>";
+                        }
                         ?>
                     </tr>
                     </thead>
@@ -185,17 +215,31 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                     <?php
                         $i=0;
                         $y=[];
-                        foreach($data as $nama=>$krit){
-                            echo "<tr>
-                            <td>".(++$i)."</td>
-                            <th>A{$i}</th>
-                            <td>{$nama}</td>";
-                            foreach($kriteria as $k){
-                            $y[$k][$i-1]=round(($krit[$k]/sqrt($nilai_kuadrat[$k])),3)*$bobot[$k];
-                            echo "<td align='center'>".$y[$k][$i-1]."</td>";
+                        $nama_customer = NULL;
+                        $no_hp = NULL;
+                        $nama_barang = NULL;
+                        foreach($data as $nama => $krit)
+                        {
+                            $explode = explode(",",$nama);
+                            $nama_customer = $explode[0];
+                            $no_hp = $explode[1];
+                            $nama_barang = $explode[2];
+                        ?>
+                            <tr>
+                                <td class="text-center"><?php echo ++$i."." ?></td>
+                                <td><?php echo substr($nama_barang,0,-10) ?></td>
+                                <td><?php echo stripcslashes($nama_customer) ?></td>
+                            <?php 
+                            foreach($kriteria as $k)
+                            {
+                                $y[$k][$i-1]=round(($krit[$k]/sqrt($nilai_kuadrat[$k])),3)*$bobot[$k];
+                            ?>
+                                <td class="text-center"><?php echo $y[$k][$i-1] ?></td>
+                            <?php 
                             }
-                            echo
-                            "</tr>\n";
+                            ?>
+                            </tr>
+                        <?php
                         }
                     ?>
                     </tbody>
@@ -212,21 +256,29 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="dataTable4" width="100%" cellspacing="0">
                 <thead>
                 <tr>
-                    <th colspan='<?php echo $jml_kriteria;?>'>Kriteria</th>
+                    <th class="text-center" colspan='<?php echo $jml_kriteria;?>'>Kriteria</th>
                 </tr>
                 <tr>
                     <?php
                     foreach($kriteria as $k)
-                    echo "<th>$k</th>\n";
+                    {
+                    ?>
+                        <th class="text-center"><?php echo $k ?></th>
+                    <?php
+                    }
                     ?>
                 </tr>
                 <tr>
                     <?php
                     for($n=1;$n<=$jml_kriteria;$n++)
-                    echo "<th>y<sub>{$n}</sub><sup>+</sup></th>";
+                    {
+                    ?>
+                        <th>y<sub><?php echo $n ?></sub><sup>+</sup></th>
+                    <?php
+                    }
                     ?>
                 </tr>
                 </thead>
@@ -262,7 +314,7 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="dataTable5" width="100%" cellspacing="0">
                 <thead>
                 <tr>
                     <th colspan='<?php echo $jml_kriteria;?>'>Kriteria</th>
@@ -270,13 +322,21 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 <tr>
                     <?php
                     foreach($kriteria as $k)
-                    echo "<th>{$k}</th>\n";
+                    {
+                    ?>
+                        <th class="text-center"><?php echo $k ?></th>
+                    <?php
+                    }
                     ?>
                 </tr>
                 <tr>
                     <?php
                     for($n=1;$n<=$jml_kriteria;$n++)
-                    echo "<th>y<sub>{$n}</sub><sup>-</sup></th>";
+                    {
+                    ?>
+                        <th>y<sub><?php echo $n ?></sub><sup>-</sup></th>
+                    <?php
+                    }
                     ?>
                 </tr>
                 </thead>
@@ -312,12 +372,12 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="dataTable6" width="100%" cellspacing="0">
                 <thead>
                 <tr>
-                    <th>No</th>
-                    <th>Alternatif</th>
-                    <th>Nama</th>
+                    <th class="text-center">No</th>
+                    <th>Barang</th>
+                    <th>Customer</th>
                     <th>D<suo>+</sup></th>
                 </tr>
                 </thead>
@@ -325,18 +385,30 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 <?php
                     $i=0;
                     $dplus=[];
-                    foreach($data as $nama=>$krit){
-                        echo "<tr>
-                        <td>".(++$i)."</td>
-                        <th>A{$i}</th>
-                        <td>{$nama}</td>";
+                    $nama_customer = NULL;
+                    $no_hp = NULL;
+                    $nama_barang = NULL;
+                    foreach($data as $nama => $krit)
+                    {
+                        $explode = explode(",",$nama);
+                        $nama_customer = $explode[0];
+                        $no_hp = $explode[1];
+                        $nama_barang = $explode[2];
+                    ?>
+                        <tr>
+                            <td class="text-center"><?php echo ++$i."." ?></td>
+                            <td><?php echo substr($nama_barang,0,-10) ?></td>
+                            <td><?php echo stripcslashes($nama_customer) ?></td>
+                        <?php
                         foreach($kriteria as $k){
                         if(!isset($dplus[$i-1])) 
                             $dplus[$i-1]=0;
                             $dplus[$i-1]+=pow($yplus[$k]-$y[$k][$i-1],2);
                         }
-                        echo "<td>".round(sqrt($dplus[$i-1]),3)."</td>
-                        </tr>\n";
+                        ?>
+                            <td><?php echo round(sqrt($dplus[$i-1]),3) ?></td>
+                        </tr>
+                    <?php
                     }
                 ?>
                 </tbody>
@@ -353,12 +425,12 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="dataTable7" width="100%" cellspacing="0">
                 <thead>
                 <tr>
-                    <th>No</th>
-                    <th>Alternatif</th>
-                    <th>Nama</th>
+                    <th class="text-center">No</th>
+                    <th>Barang</th>
+                    <th>Customer</th>
                     <th>D<suo>-</sup></th>
                 </tr>
                 </thead>
@@ -366,17 +438,30 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 <?php
                 $i=0;
                 $dmin=[];
-                foreach($data as $nama=>$krit){
-                    echo "<tr>
-                    <td>".(++$i)."</td>
-                    <th>A{$i}</th>
-                    <td>{$nama}</td>";
-                    foreach($kriteria as $k){
+                $nama_customer = NULL;
+                $no_hp = NULL;
+                $nama_barang = NULL;
+                foreach($data as $nama => $krit)
+                {
+                    $explode = explode(",",$nama);
+                    $nama_customer = $explode[0];
+                    $no_hp = $explode[1];
+                    $nama_barang = $explode[2];
+                ?>
+                    <tr>
+                        <td class="text-center"><?php echo ++$i."." ?></td>
+                        <td><?php echo substr($nama_barang,0,-10) ?></td>
+                        <td><?php echo stripcslashes($nama_customer) ?></td>
+                    <?php
+                    foreach($kriteria as $k)
+                    {
                     if(!isset($dmin[$i-1]))$dmin[$i-1]=0;
                     $dmin[$i-1]+=pow($ymin[$k]-$y[$k][$i-1],2);
                     }
-                    echo "<td>".round(sqrt($dmin[$i-1]),3)."</td>
-                    </tr>\n";
+                    ?>
+                        <td><?php echo round(sqrt($dmin[$i-1]),3) ?></td>
+                    </tr>
+                <?php
                 }
                 ?>
                 </tbody>
@@ -396,30 +481,44 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 if($dmin[0] != 0 || $dplus[0] != 0 )
                 {
                 ?>
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="dataTable8" width="100%" cellspacing="0">
                 <thead>
                 <tr>
-                    <th>No</th>
-                    <th>Alternatif</th>
-                    <th>Nama</th>
+                    <th class="text-center">No</th>
+                    <th>Barang</th>
+                    <th>Customer</th>
                     <th>V<sub>i</sub></th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php
-                $i=0;
-                $V=[];
-                foreach($data as $nama=>$krit){
-                    echo "<tr>
-                    <td>".(++$i)."</td>
-                    <th>A{$i}</th>
-                    <td>{$nama}</td>";
-                    foreach($kriteria as $k){
-                    $V[$i-1]=sqrt($dmin[$i-1])/(sqrt($dmin[$i-1])+sqrt($dplus[$i-1]));
+                    $i=0;
+                    $V=[];
+                    $nama_customer = NULL;
+                    $no_hp = NULL;
+                    $nama_barang = NULL;
+                    foreach($data as $nama => $krit)
+                    {
+                        $explode = explode(",",$nama);
+                        $nama_customer = $explode[0];
+                        $no_hp = $explode[1];
+                        $nama_barang = $explode[2];
+                    ?>
+                        <tr>
+                            <td class="text-center"><?php echo ++$i."." ?></td>
+                            <td><?php echo substr($nama_barang,0,-10) ?></td>
+                            <td><?php echo stripcslashes($nama_customer) ?></td>
+                        <?php 
+                        foreach($kriteria as $k)
+                        {
+                        $V[$i-1]=sqrt($dmin[$i-1])/(sqrt($dmin[$i-1])+sqrt($dplus[$i-1]));
+                        }
+                        $preferensi = round($V[$i-1],3);
+                        ?>
+                            <td><?php echo $preferensi ?></td>
+                        </tr>
+                    <?php
                     }
-                    $preferensi = round($V[$i-1],3);
-                    echo "<td>{$preferensi}</td></tr>\n";
-                }
                 ?>
                 </tbody>
                 </table>

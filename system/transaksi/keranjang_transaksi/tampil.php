@@ -19,7 +19,7 @@ if(isset($_POST['simpan']))
                 $grand_total_temp = $_POST['grand_total'];
                 $grand_total = (int) preg_replace("/[^0-9]/", "", $grand_total_temp);
                 date_default_timezone_set("Asia/Jakarta");
-                $nama_customer = addslashes($_POST['nama_customer']);
+                $nama_customer = ucwords(addslashes($_POST['nama_customer']));
                 $no_hp = $_POST['no_hp'];
                 $tgl_pemesanan = date('Y-m-d');
                 $tgl_deadline = date("Y-m-d",strtotime($_POST['tgl_deadline']));
@@ -58,7 +58,7 @@ if(isset($_POST['simpan']))
 
                             $id_barang = $_POST['id_barang'][$i];
                             $nama_barang = $_POST['nama_barang_detail'][$i];
-                            $nama_barang_detail_temp = $nama_barang." ".$auto_kode2;
+                            $nama_barang_detail_temp = $nama_customer.",".$no_hp.",".$nama_barang." ".$auto_kode2;
                             $nama_barang_detail = addslashes($nama_barang_detail_temp);
                             $tingkat_kesulitan = $_POST['tingkat_kesulitan'][$i];
                             $qty_temp =  $_POST['qty'][$i];

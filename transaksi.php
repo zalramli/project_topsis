@@ -83,6 +83,24 @@ include "koneksi/function.php";
         $('#dataTable2').DataTable({
             ordering: false
         });
+        $('#dataTable3').DataTable({
+            ordering: false
+        });
+        $('#dataTable4').DataTable({
+            ordering: false
+        });
+        $('#dataTable5').DataTable({
+            ordering: false
+        });
+        $('#dataTable6').DataTable({
+            ordering: false
+        });
+        $('#dataTable7').DataTable({
+            ordering: false
+        });
+        $('#dataTable8').DataTable({
+            ordering: false
+        });
     </script>
     <script type="text/javascript">
         $(document).ready(function () {
