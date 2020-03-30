@@ -27,11 +27,12 @@
                 date_default_timezone_set("Asia/Jakarta");
                 $tanggal_deadline = date("Y-m-d",strtotime($row['value_kriteria']));
                 $sekarang = date("Y-m-d");
-                $today2    = new DateTime($sekarang);
-                $booking2       = new DateTime($tanggal_deadline);
-                $diff2        = $booking2->diff($today2);
-                $interval2 = $diff2->format('%d');
-                $row['value_kriteria'] = $interval2;
+                $selisih = ((strtotime ($tanggal_deadline) - strtotime ($sekarang))/(60*60*24));
+                $row['value_kriteria'] = (int) $selisih;
+                if($row['value_kriteria'] < 0)
+                {
+                    $row['value_kriteria'] = 0;
+                }
             }
             $bobot[$row['nama_kriteria']]=$row['bobot'];
             $atribut[$row['nama_kriteria']]=$row['atribut'];

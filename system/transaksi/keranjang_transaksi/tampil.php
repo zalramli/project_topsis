@@ -73,7 +73,7 @@ if(isset($_POST['simpan']))
                         {
                             echo "<script>Swal.fire('Sukses','Transaksi Berhasil','success')
                             .then(function(){
-                            window.location = window.location = 'transaksi.php?halaman=transaksi';
+                            window.location = window.location = 'admin.php?halaman=transaksi';
                             });</script>";
                         }
                 }
@@ -83,7 +83,7 @@ if(isset($_POST['simpan']))
         {
             echo "<script>Swal.fire('Gagal','Daftar belanja kosong','error')
                     .then(function(){
-                    window.location = window.location = 'transaksi.php?halaman=transaksi';
+                    window.location = window.location = 'admin.php?halaman=transaksi';
                     });</script>";
         }
     }
@@ -91,7 +91,7 @@ if(isset($_POST['simpan']))
     {
         echo "<script>Swal.fire('Gagal','Daftar belanja kosong','error')
                     .then(function(){
-                    window.location = window.location = 'transaksi.php?halaman=transaksi';
+                    window.location = window.location = 'admin.php?halaman=transaksi';
                     });</script>";
     }   
 }

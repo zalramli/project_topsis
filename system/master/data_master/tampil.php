@@ -9,7 +9,7 @@ if(isset($_POST['simpan_barang']))
     if ($query_insert_barang) {
         echo "<script>Swal.fire('Sukses','Data Berhasil Ditambahkan','success')
 		.then(function(){
-		window.location = window.location = 'transaksi.php?halaman=master';
+		window.location = window.location = 'admin.php?halaman=master';
 		});</script>";
     }
 }
@@ -25,7 +25,7 @@ if(isset($_POST['update_barang']))
     if ($query_update_barang) {
 		echo "<script>Swal.fire('Sukses','Data Berhasil Diupdate','success')
 		.then(function(){
-		window.location = window.location = 'transaksi.php?halaman=master';
+		window.location = window.location = 'admin.php?halaman=master';
 		});</script>";
     }
 }
@@ -35,7 +35,7 @@ if (isset($_GET['hapus_barang'])) {
     if ($query_hapus_barang) {
 		echo "<script>Swal.fire('Sukses','Data Berhasil Dihapus','success')
 		.then(function(){
-		window.location = window.location = 'transaksi.php?halaman=master';
+		window.location = window.location = 'admin.php?halaman=master';
 		});</script>";
     }
 }
@@ -49,7 +49,7 @@ if(isset($_POST['simpan_kriteria']))
     if ($query_insert_kriteria) {
         echo "<script>Swal.fire('Sukses','Data Berhasil Ditambahkan','success')
 		.then(function(){
-		window.location = window.location = 'transaksi.php?halaman=master';
+		window.location = window.location = 'admin.php?halaman=master';
 		});</script>";
     }
 }
@@ -64,7 +64,7 @@ if(isset($_POST['update_kriteria']))
     if ($query_update_kriteria) {
 		echo "<script>Swal.fire('Sukses','Data Berhasil Diupdate','success')
 		.then(function(){
-		window.location = window.location = 'transaksi.php?halaman=master';
+		window.location = window.location = 'admin.php?halaman=master';
 		});</script>";
     }
 }
@@ -75,7 +75,7 @@ if (isset($_GET['hapus_kriteria'])) {
     if ($query_hapus_kriteria) {
 		echo "<script>Swal.fire('Sukses','Data Berhasil Dihapus','success')
 		.then(function(){
-		window.location = window.location = 'transaksi.php?halaman=master';
+		window.location = window.location = 'admin.php?halaman=master';
 		});</script>";
     }
 }
