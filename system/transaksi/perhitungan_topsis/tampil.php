@@ -15,9 +15,8 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
             <h6 class="m-0 font-weight-bold text-primary">Evaluation Matrix (x<sub>ij</sub>)</h6>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
-            <?php 
-                $query = mysqli_query($koneksi, "SELECT * FROM detail_transaksi JOIN transaksi USING(id_transaksi) JOIN kriteria USING (id_kriteria) JOIN barang USING(id_barang)");
+        <?php 
+                $query = mysqli_query($koneksi, "SELECT * FROM detail_transaksi JOIN transaksi USING(id_transaksi) JOIN kriteria USING (id_kriteria) JOIN barang USING(id_barang) WHERE status_pengerjaan='Belum Selesai'");
                 $jumlah_batas = mysqli_num_rows($query);
                 $data      = [];
                 $kriterias = [];
@@ -61,7 +60,14 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 }
                 $kriteria     =array_unique($kriterias);
                 $jml_kriteria =count($kriteria);
+                $count_data = 0;
                 ?>
+                <?php 
+                    $count_data = count($data);
+                    if($count_data > 1)
+                    {
+                ?>
+            <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                     <tr>
@@ -121,6 +127,9 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                     </tbody>
                 </table>
             </div>
+            <?php } else { ?>
+                    <h2 class="text-center">Minimal 2 Data Barang Pesanan</h2>
+                <?php } ?>
         </div>
     </div>
 </div>
@@ -130,6 +139,11 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
             <h6 class="m-0 font-weight-bold text-primary">Tabel Ternormalisasi (r<sub>ij</sub>)</h6>
         </div>
         <div class="card-body">
+        <?php 
+            $count_data = count($data);
+            if($count_data > 1)
+            {
+        ?>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
                     <thead>
@@ -181,6 +195,9 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                     </tbody>
                 </table>
             </div>
+            <?php } else { ?>
+                    <h2 class="text-center">Minimal 2 Data Barang Pesanan</h2>
+                <?php } ?>
         </div>
     </div>
 </div>
@@ -191,6 +208,11 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
             <h6 class="m-0 font-weight-bold text-primary">Tabel Ternormalisasi Bobot (y<sub>ij</sub>)</h6>
         </div>
         <div class="card-body">
+        <?php 
+            $count_data = count($data);
+            if($count_data > 1)
+            {
+        ?>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
                     <thead>
@@ -245,6 +267,9 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                     </tbody>
                 </table>
             </div>
+            <?php } else { ?>
+                    <h2 class="text-center">Minimal 2 Data Barang Pesanan</h2>
+                <?php } ?>
         </div>
     </div>
 </div>
@@ -255,6 +280,11 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
             <h6 class="m-0 font-weight-bold text-primary">Solusi Ideal positif (A<sup>+</sup>)</h6>
         </div>
         <div class="card-body">
+        <?php 
+            $count_data = count($data);
+            if($count_data > 1)
+            {
+        ?>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable4" width="100%" cellspacing="0">
                 <thead>
@@ -303,6 +333,9 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 </tbody>
                 </table>
             </div>
+            <?php } else { ?>
+                    <h2 class="text-center">Minimal 2 Data Barang Pesanan</h2>
+                <?php } ?>
         </div>
     </div>
 </div>
@@ -313,6 +346,11 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
             <h6 class="m-0 font-weight-bold text-primary">Solusi Ideal negatif (A<sup>-</sup>)</h6>
         </div>
         <div class="card-body">
+        <?php 
+            $count_data = count($data);
+            if($count_data > 1)
+            {
+        ?>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable5" width="100%" cellspacing="0">
                 <thead>
@@ -361,6 +399,9 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 </tbody>
                 </table>
             </div>
+            <?php } else { ?>
+                    <h2 class="text-center">Minimal 2 Data Barang Pesanan</h2>
+                <?php } ?>
         </div>
     </div>
 </div>
@@ -371,6 +412,11 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
             <h6 class="m-0 font-weight-bold text-primary">Jarak positif (D<sub>i</sub><sup>+</sup>)</h6>
         </div>
         <div class="card-body">
+        <?php 
+            $count_data = count($data);
+            if($count_data > 1)
+            {
+        ?>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable6" width="100%" cellspacing="0">
                 <thead>
@@ -414,6 +460,9 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 </tbody>
                 </table>
             </div>
+            <?php } else { ?>
+                    <h2 class="text-center">Minimal 2 Data Barang Pesanan</h2>
+                <?php } ?>
         </div>
     </div>
 </div>
@@ -424,6 +473,11 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
             <h6 class="m-0 font-weight-bold text-primary">Jarak negatif (D<sub>i</sub><sup>-</sup>)</h6>
         </div>
         <div class="card-body">
+        <?php 
+            $count_data = count($data);
+            if($count_data > 1)
+            {
+        ?>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable7" width="100%" cellspacing="0">
                 <thead>
@@ -467,6 +521,9 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 </tbody>
                 </table>
             </div>
+            <?php } else { ?>
+                    <h2 class="text-center">Minimal 2 Data Barang Pesanan</h2>
+                <?php } ?>
         </div>
     </div>
 </div>
@@ -476,11 +533,12 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
             <h6 class="m-0 font-weight-bold text-primary">Nilai Preferensi(V<sub>i</sub>)</h6>
         </div>
         <div class="card-body">
+        <?php 
+            $count_data = count($data);
+            if($count_data > 1)
+            {
+        ?>
             <div class="table-responsive">
-                <?php 
-                if($dmin[0] != 0 || $dplus[0] != 0 )
-                {
-                ?>
                 <table class="table table-bordered" id="dataTable8" width="100%" cellspacing="0">
                 <thead>
                 <tr>
@@ -522,14 +580,10 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                 ?>
                 </tbody>
                 </table>
-                <?php 
-                } else {
-                ?>
-                <h2 class="text-center">Harus Ada 2 Data</h2>
-                <?php
-                }
-                ?>
             </div>
+            <?php } else { ?>
+                    <h2 class="text-center">Minimal 2 Data Barang Pesanan</h2>
+                <?php } ?>
         </div>
     </div>
 </div>

@@ -112,15 +112,20 @@
             $dmin[$i-1]+=pow($ymin[$k]-$y[$k][$i-1],2);
         }
     }
-    
+    $count_data = 0;
 
 ?>
-<div class="container-fluid">
+<div class="container-fluid mt-3">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Nilai Preferensi(V<sub>i</sub>)</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Urutan Prioritas</h6>
         </div>
         <div class="card-body">
+        <?php 
+            $count_data = count($data);
+            if($count_data > 1)
+            {
+        ?>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable8" width="100%" cellspacing="0">
                 <thead>
@@ -128,46 +133,72 @@
                     <th class="text-center">No</th>
                     <th class="text-center">Barang</th>
                     <th class="text-center">Customer</th>
-                    <th class="text-center">V<sub>i</sub></th>
+                    <th class="text-center">Nilai Prefensi</th>
                     <th class="text-center">Aksi</th>
                 </tr>
                 </thead>
                 <tbody>
+                
                 <?php
                     $i=0;
                     $V=[];
                     $nama_customer = NULL;
                     $no_hp = NULL;
                     $nama_barang = NULL;
+        
                     foreach($data as $nama => $krit)
                     {
-                        $explode = explode(",",$nama);
-                        $nama_customer = $explode[0];
-                        $no_hp = $explode[1];
-                        $nama_barang = $explode[2];
+                        ++$i;
                     ?>
-                        <tr>
-                            <td class="text-center"><?php echo ++$i."." ?></td>
-                            <td><?php echo substr($nama_barang,0,-10) ?></td>
-                            <td><?php echo stripcslashes($nama_customer) ?></td>
                         <?php 
                         foreach($kriteria as $k)
                         {
                             $V[$i-1]=sqrt($dmin[$i-1])/(sqrt($dmin[$i-1])+sqrt($dplus[$i-1]));
                         }
                         $preferensi = round($V[$i-1],3);
+                        $tampung_array[] = ["nama_barang" => $nama,"nilai" => $preferensi];
+                        
                         ?>
-                            <td><?php echo $preferensi ?></td>
+                    <?php
+                    }
+
+                    // Mengurutkan array dari kecil ke besar
+                    function cmp($a, $b)
+                    {
+                        return strcmp($a["nilai"], $b["nilai"]);
+                    }
+                    usort($tampung_array, "cmp");
+                    // Di balik
+                    $tampung_array = array_reverse($tampung_array);
+                ?>
+                    <?php
+                        $no = 1; 
+                        foreach($tampung_array as $tampil)
+                        {
+                            $nama = $tampil['nama_barang'];
+                            $explode = explode(",",$tampil['nama_barang']);
+                            $nama_customer = $explode[0];
+                            $no_hp = $explode[1];
+                            $nama_barang = $explode[2];
+                    ?>
+                        <tr>
+                            <td class="text-center"><?php echo $no++."." ?></td>
+                            <td><?php echo substr($nama_barang,0,-10) ?></td>
+                            <td><?php echo stripcslashes($nama_customer) ?></td>
+                            <td><?php echo $tampil['nilai'] ?></td>
                             <td class="text-center">
                                 <a href="#" class="btn btn-sm btn-success btn_proses" data-proses="<?php echo $nama ?>">Kerjakan Barang</a>
                             </td>
                         </tr>
-                    <?php
-                    }
-                ?>
+                    <?php 
+                        }
+                    ?>
                 </tbody>
                 </table>
             </div>
+                <?php } else { ?>
+                    <h2 class="text-center">Minimal 2 Data Barang Pesanan</h2>
+                <?php } ?>
         </div>
     </div>
 </div>
