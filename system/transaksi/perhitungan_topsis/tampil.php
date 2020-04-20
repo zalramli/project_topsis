@@ -48,7 +48,7 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                             $row['value_kriteria'] = (int) $selisih;
                             if($row['value_kriteria'] < 0)
                             {
-                                $row['value_kriteria'] = 0;
+                                $row['value_kriteria'] = 0.001;
                             }
                         }
                         $bobot[$row['nama_kriteria']]=$row['bobot'];
@@ -113,6 +113,10 @@ $f = sqrt(pow((2.78545-1.85695),2) + pow((2.38512-1.19256),2) + pow((1.94664-3.2
                                 if($k == 'Harga')
                                 {
                                     echo "<td class='text-right'>".rupiah($krit[$k])."</td>";
+                                }
+                                else if($krit[$k] == 0.001)
+                                {
+                                    echo "<td class='text-right'>0</td>";
                                 }
                                 else
                                 {

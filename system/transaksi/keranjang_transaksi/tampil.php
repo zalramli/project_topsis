@@ -183,7 +183,7 @@ if(isset($_POST['simpan']))
                                             Grand Total
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="date" class="form-control form-control-sm"
+                                            <input type="text" id="datepicker" class="form-control form-control-sm"
                                                 name="tgl_deadline" required>
                                         </div>
                                         <div class="col-md-6">

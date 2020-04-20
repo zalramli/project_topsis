@@ -31,7 +31,7 @@
                 $row['value_kriteria'] = (int) $selisih;
                 if($row['value_kriteria'] < 0)
                 {
-                    $row['value_kriteria'] = 0;
+                    $row['value_kriteria'] = 0.001;
                 }
             }
             $bobot[$row['nama_kriteria']]=$row['bobot'];
